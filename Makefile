@@ -7,16 +7,16 @@ SERVICE = Acorn
 SERVICE_NAME = Acorn
 
 # Your service parts
-FILES = service.cpp memdisk.o
+FILES = service.cpp memdisk.o ./http-parser/http_parser.o
 
 # Your disk image
 DISK=
 
 # Your own include-path
-LOCAL_INCLUDES=-I./http/inc
+LOCAL_INCLUDES=-I./http/inc -I./http-parser
 
 # Local target dependencies
-.PHONY: memdisk.fat
+#.PHONY: memdisk.fat
 all: memdisk.fat memdisk.o
 
 # IncludeOS location

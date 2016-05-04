@@ -1,3 +1,6 @@
 [submodule "http"]
 	path = http
 	url = git@github.com:hioa-cs/http.git
+[submodule "http-parser"]
+	path = http-parser
+	url = git@github.com:nodejs/http-parser.git
