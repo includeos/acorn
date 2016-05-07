@@ -58,7 +58,31 @@ void recursive_fs_dump(vector<fs::Dirent> entries, int depth = 1) {
 
 }
 
+
+template <typename PTR>
+class BufferWrapper {
+
+  using ptr_t = PTR;
+
+  ptr_t data;
+  size_t size;
+
+public:
+
+  BufferWrapper(ptr_t ptr, size_t sz) :
+    data {ptr}, size{sz}
+  {}
+
+  const ptr_t begin() { return data; }
+  const ptr_t end() { return data + size; }
+};
+
+
 void Service::start() {
+
+  uri::URI uri1("asdf");
+
+  printf("<URI> Test URI: %s \n", uri1.to_string().c_str());
 
   // mount the main partition in the Master Boot Record
   disk->mount([](fs::error_t err) {
@@ -68,23 +92,28 @@ void Service::start() {
       server::Router routes;
 
       /* Route: GET /images/prettypicture.jpg */
-      routes.on_get("/images/prettypicture.jpg"s,
-        [](const auto&, auto res)
-      {
+      std::string my_path = "/images/prettypicture.jpg";
+      std::regex my_route {my_path};
 
-        disk->fs().stat("/images/prettypicture.jpg",
-          [res](auto err, const auto& entry)
-        {
-          if(!err)
-            res->send_file({disk, entry});
-          else
-            res->send_code(http::Not_Found);
+      vector<std::regex> regexi;
+
+      regexi.emplace_back(my_route);
+
+
+      routes.on_get("/images/.*", [](const auto& req, auto res) {
+
+          disk->fs().stat(req.uri().path(), [res](auto err, const auto& entry) {
+              if(!err)
+                res->send_file({disk, entry});
+              else
+                res->send_code(http::Not_Found);
         });
 
       });
 
+      printf("My path: %s \n", my_path.c_str());
       /* Route: GET / */
-      routes.on_get("/"s, [](const auto&, auto res){
+      routes.on_get("/", [](const auto&, auto res){
           disk->fs().readFile("/index.html", [res] (fs::error_t err, fs::buffer_t buff, size_t len) {
               if(err) {
                 res->set_status_code(http::Not_Found);
