@@ -142,9 +142,7 @@ inline void Server::listen(Port port) {
         try {
           // Create request / response objects for callback
           Request  req {std::string{(char*)buf.get(), n}};
-          std::cout << "<Srv> Parsed URI: " << req.uri() << "\n";
-          std::cout << "<Srv> Parsed URI.path(): " << req.uri().path() << "\n";
-
+          std::cout << "Request: " << req << "\n";
           std::shared_ptr<ServerResponse> res = std::make_shared<ServerResponse>(conn);
 
           // Get and call the callback

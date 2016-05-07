@@ -305,13 +305,13 @@ namespace server {
 
     auto routes = route_table_[method];
     if (routes.empty())
-      throw Router_error("No routes for methodz " + method::str(method));
+      throw Router_error("No routes for method " + method::str(method));
 
     for (auto& route : routes)
       if (std::regex_match(path.begin(), path.end(), route.expr))
         return route.callback;
 
-    throw Router_error("No matching routez for " + std::to_string(method) + " " + path);
+    throw Router_error("No matching route for " + method::str(method) + " " + path);
   }
 
   Router::Router(){};
