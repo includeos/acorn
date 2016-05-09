@@ -58,46 +58,196 @@ void recursive_fs_dump(vector<fs::Dirent> entries, int depth = 1) {
 
 }
 
+///
+/// Template based middleware (concept sketch)
+///
 
-template <typename PTR>
-class BufferWrapper {
+using Resp_ptr = std::shared_ptr<http::Response>;
 
-  using ptr_t = PTR;
+// Default, least evolved middleware
 
-  ptr_t data;
-  size_t size;
+class Mediumware {
 
 public:
+  using Request = http::Request;
+  using Next = delegate<void(Request, Resp_ptr)>;
 
-  BufferWrapper(ptr_t ptr, size_t sz) :
-    data {ptr}, size{sz}
-  {}
+  std::string name() { return "Mediumware"; }
 
-  const ptr_t begin() { return data; }
-  const ptr_t end() { return data + size; }
+  virtual void process(Request req, Resp_ptr resp, Next next) {
+    printf("<Logger> Received vanilla request %s \n", req.to_string().c_str());
+    next(req, resp);
+  }
 };
 
-// Just a small test to demonstrate middleware
-class Test : public server::Middleware {
-public:
-  Test(std::string str) : server::Middleware(), test_str(str) {}
 
-  virtual void process(server::Request_ptr, server::Response_ptr, server::Next next) override {
-    printf("<MV:Test> My test string: %s\n", test_str.c_str());
-    (*next)();
+// Cookie parsers request subclass
+template<typename REQ>
+class Request_with_cookies : public REQ {
+public:
+
+  using Key = std::string;
+  using Value = std::string;
+  using CookieJar = map<Key,Value>;
+
+  Value cookie(Key key) {
+    return cookies_[key];
   }
 
-private:
-  std::string test_str;
-}; // << Test
+  Request_with_cookies(REQ& base) :
+    REQ(base),
+    cookies_{ std::make_pair("username", "Rico"),
+      std::make_pair("password","Unbreakable") }
+  {}
 
-std::shared_ptr<Test> test_middleware;
+private:
+  CookieJar cookies_;
+};
+
+// Cookie parsers request subclass
+
+template<typename REQ>
+class Cookie_parser {
+
+public:
+
+
+  // Middleware types
+  using Request = Request_with_cookies<REQ>;
+  using Next = delegate<void(Request, Resp_ptr)>;
+
+  std::string name() { return "Cookie_parser"; }
+  void process(REQ req, Resp_ptr resp, Next next){
+
+    printf("<Cookie_parser> Cookies parsed! Calling next with cookies \n");
+
+    next(Request(req), resp);
+  }
+};
+
+
+template <typename REQ>
+class JSON_parsed_request : public REQ {
+public:
+
+  using JSON = std::string;
+
+  JSON body() {
+    return obj_;
+  }
+
+  JSON_parsed_request (REQ& r) :
+    REQ(r),
+    obj_{"{\"username\": \"Rico\" }"}
+  {}
+
+private:
+  JSON obj_;
+};
+
+
+
+template<typename REQ>
+class Body_parser {
+
+public:
+
+  using Request = JSON_parsed_request<REQ>;
+  using JSON = typename Request::JSON;
+  using Next = delegate<void(Request, Resp_ptr)>;
+
+  std::string name() { return "Body_parser"; }
+  void process(REQ req, Resp_ptr resp, Next next){
+
+    printf("<Body_parser> Body parsed! Calling next with JSON \n");
+    next(Request(req), resp);
+  }
+
+
+};
+
+
+template<typename REQ>
+class Async_delayer {
+public:
+
+  using Request = REQ;
+  using Next = delegate<void(Request, Resp_ptr)>;
+
+  std::string name() { return "Async_delayer"; }
+
+  void process(REQ req, Resp_ptr resp, Next next) {
+
+    printf("<Async_delayer> Calling next in a second \n");
+
+    hw::PIT::on_timeout(1, [&req, resp, next](){
+        printf("<Async_delayer> Next! \n");
+        next(req, resp);
+      });
+  }
+};
+
+
+template<typename REQ>
+class Dependant_middleware {
+
+public:
+
+  // Middleware types
+  using Request = REQ;
+  using Next = delegate<void(Request, Resp_ptr)>;
+
+  std::string name() { return "Dependant_middleware"; }
+  void process(REQ req, Resp_ptr resp, Next next){
+    printf("Dependant middleware, expecting cookies and JSON-parsed body \n");
+
+    printf("Username from JSON: %s\n", req.cookie("password").c_str());
+    printf("JSON from body: %s\n", req.body().c_str());
+
+    next(req, resp);
+  }
+};
+
+
+
+///
+/// Variadic middleware "use"-funcition
+///
+
+// Recursive part
+template<typename Req, typename Current, typename Next, typename... Rest>
+void use(Req req, Resp_ptr resp,
+         Current curr, Next next_1, Rest... next_n) {
+  printf("<use> Current: %s, Next: %s, then Rest... \n",
+         curr.name().c_str(), next_1.name().c_str() );
+
+  typename Current::Next next_callback =
+    [next_1, next_n...] (typename Current::Request req, Resp_ptr resp) {
+    use(req, resp, next_1, next_n...);
+  };
+
+  curr.process(req, resp, next_callback);
+
+}
+
+// Base case (last step)
+template<typename Req, typename Last>
+void use(Req req, Resp_ptr resp, Last last ){
+
+  printf("<use> Last: %s \n", last.name().c_str());
+
+  typename Last::Next last_callback =
+    [ &last ] (typename Last::Request req, Resp_ptr resp) {
+    printf("Last callback! Called by: %s \n", last.name().c_str());
+
+    //resp.send();
+  };
+
+  last.process(req, resp, last_callback);
+}
+
 
 void Service::start() {
-
-  uri::URI uri1("asdf");
-
-  printf("<URI> Test URI: %s \n", uri1.to_string().c_str());
 
   // mount the main partition in the Master Boot Record
   disk->mount([](fs::error_t err) {
@@ -105,6 +255,30 @@ void Service::start() {
       if (err)  panic("Could not mount filesystem, retreating...\n");
 
       server::Router routes;
+
+      ///
+      /// Use Mediumware (currently in a route)
+      ///
+      routes.on_get("/mediumware/.*", [](auto req, auto res) {
+
+
+          // Unfortunately we have to do the type nesting manually,
+          // at least for now
+          using M0 = Mediumware;
+          using M1 = Cookie_parser<M0::Request>;
+          using M2 = Body_parser<M1::Request>;
+          //...
+          using Mn = Dependant_middleware<M2::Request>;
+
+          // The use call - stack up all middleware
+          use(*req, res,
+              M0(),
+              M1(),
+              M2(),
+              //...
+              Mn());
+
+        });
 
       routes.on_get("/api/users/.*", [](auto req, auto res) {
           res->add_header(http::header_fields::Entity::Content_Type,
@@ -114,67 +288,11 @@ void Service::start() {
           res->send();
         });
 
-      routes.on_get("/books/.*", [](auto req, auto res) {
-          res->add_header(http::header_fields::Entity::Content_Type,
-                          "text/HTML; charset=utf-8"s)
-            .add_body("<html><body>"
-                      "<h1>Books:</h1>"
-                      "<ul>"
-                      "<li> borkman.txt </li>"
-                      "<li> fables.txt </li>"
-                      "<li> poetics.txt </li>"
-                      "</ul>"
-                      "</body></html>"s
-                      );
-
-          res->send();
-        });
-
-      routes.on_get("/images/.*", [](auto req, auto res) {
-          disk->fs().stat(req->uri().path(), [res](auto err, const auto& entry) {
-              if(!err)
-                res->send_file({disk, entry});
-              else
-                res->send_code(http::Not_Found);
-        });
-
-      });
-
-      /* Route: GET / */
-      routes.on_get(R"(index\.html?|\/|\?)", [](auto, auto res){
-          disk->fs().readFile("/index.html", [res] (fs::error_t err, fs::buffer_t buff, size_t len) {
-              if(err) {
-                res->set_status_code(http::Not_Found);
-              } else {
-                // fill Response with content from index.html
-                printf("<Server> Responding with index.html. \n");
-                res->add_header(http::header_fields::Entity::Content_Type, "text/html; charset=utf-8"s)
-                  .add_body(std::string{(const char*) buff.get(), len});
-              }
-              res->send();
-            });
-
-        }); // << fs().readFile
-
       // initialize server
       acorn = std::make_unique<server::Server>();
       acorn->set_routes(routes).listen(8081);
 
-      // add a middleware as lambda
-      acorn->use([](auto req, auto res, auto next){
-        hw::PIT::on_timeout(0.050, [next]{
-          printf("<MW:lambda> EleGiggle (50ms delay)\n");
-          (*next)();
-        });
-      });
-
-      // add a middleware as a class derived from server::Middleware
-      test_middleware = std::make_shared<Test>("PogChamp");
-      acorn->use(*test_middleware);
-
-
       auto vec = disk->fs().ls("/").entries;
-
 
       printf("------------------------------------ \n");
       printf(" Memdisk contents \n");
@@ -183,8 +301,8 @@ void Service::start() {
       printf("------------------------------------ \n");
 
       hw::PIT::instance().onRepeatedTimeout(15s, []{
-        printf("%s\n", acorn->ip_stack().tcp().status().c_str());
-      });
+          printf("%s\n", acorn->ip_stack().tcp().status().c_str());
+        });
 
-    }); // < disk*/
+    });
 }
