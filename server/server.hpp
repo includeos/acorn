@@ -21,11 +21,9 @@
 #include <net/inet4>
 #include <net/dhcp/dh4client.hpp>
 
-#include "middleware.hpp"
-#include "request.hpp"
-#include "response.hpp"
-#include "connection.hpp"
 #include "router.hpp"
+#include "middleware.hpp"
+#include "connection.hpp"
 
 namespace server {
 
@@ -38,9 +36,11 @@ private:
   //-------------------------------
   // Internal class type aliases
   //-------------------------------
-  using Port     = const unsigned;
-  using IP_Stack = std::shared_ptr<net::Inet4<VirtioNet>>;
-  using OnConnect = net::TCP::Connection::ConnectCallback;
+  using Port            = const uint16_t;
+  using IP_Stack        = std::shared_ptr<net::Inet4<VirtioNet>>;
+  using ConnectionPool  = std::vector<Connection_ptr>;
+  using FreeConnections = std::vector<const size_t>;
+  using OnConnect       = net::TCP::Connection::ConnectCallback;
   using MiddlewareStack = std::vector<Callback>;
   //-------------------------------
 public:
@@ -50,7 +50,7 @@ public:
   //-------------------------------
   explicit Server();
 
-  Server(IP_Stack);
+  explicit Server(IP_Stack) noexcept;
 
   //-------------------------------
   // Default destructor
@@ -70,7 +70,7 @@ public:
   // Install a new route table for
   // route resolutions
   //
-  // @tparam (http::Router) new_routes - The new route table
+  // @tparam {http::Router} new_routes - The new route table
   //                                     to install
   //
   // @return - The object that invoked this method
@@ -85,7 +85,7 @@ public:
   //-------------------------------
   void listen(Port port);
 
-  void close(size_t conn_idx);
+  void close(const size_t conn_idx);
 
   void process(Request_ptr, Response_ptr);
 
@@ -95,10 +95,10 @@ private:
   //-------------------------------
   // Class data members
   //-------------------------------
-  IP_Stack inet_;
-  Router   router_;
-  std::vector<Connection_ptr> connections_;
-  std::vector<size_t> free_idx_;
+  IP_Stack        inet_;
+  Router          router_;
+  ConnectionPool  connections_;
+  FreeConnections free_idx_;
   MiddlewareStack middleware_;
 
   //-----------------------------------
@@ -130,6 +130,6 @@ inline Server& Server::set_routes(Route_Table&& routes) {
 return *this;
 }
 
-} // namespace server
+} //< namespace server
 
 #endif //< SERVER_HPP
