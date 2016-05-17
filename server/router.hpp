@@ -18,9 +18,10 @@
 #ifndef ROUTER_HPP
 #define ROUTER_HPP
 
-#include <functional>
 #include <regex>
 #include <stdexcept>
+#include <functional>
+
 #include "request.hpp"
 #include "response.hpp"
 
@@ -36,19 +37,20 @@ namespace server {
     // Internal class type aliases
     //-------------------------------
     using Route_expr = std::regex;
-    using Callback = std::function<void(Request_ptr, Response_ptr)>;
+    using Callback   = std::function<void(Request_ptr, Response_ptr)>;
+
     struct Route {
-
       Route_expr expr;
-      Callback callback;
+      Callback   callback;
 
-      Route(const char* ex, Callback c) : expr{ex}, callback{c}
+      explicit Route(const char* ex, Callback c)
+        : expr{ex}
+        , callback{c}
       {}
+    }; //< struct Route
 
-    };
-
-    using Route_table = std::unordered_map< http::Method, std::vector<Route> >;
-    using Span = gsl::span<char>;
+    using Span        = gsl::span<char>;
+    using Route_table = std::unordered_map<http::Method, std::vector<Route>>;
 
   public:
     //-------------------------------
@@ -217,16 +219,13 @@ namespace server {
      * @param path : the route path
      * @note : not const becuase it uses index operator to a map
      **/
-    inline Callback match(http::Method, const std::string&);
+    Callback match(const http::Method, const std::string& path);
 
   private:
-
     Router(const Router&) = delete;
     Router& operator = (const Router&) = delete;
 
     Route_table route_table_;
-
-
   }; //< class Router
 
 
@@ -239,7 +238,7 @@ namespace server {
 
   template <typename Routee>
   inline Router& Router::on_options(Routee&& route, Callback result) {
-    route_table_[http::OPTIONS].emplace_back({std::forward<Routee>(route), result});
+    route_table_[http::OPTIONS].emplace_back(std::forward<Routee>(route), result);
     return *this;
   }
 
@@ -299,24 +298,24 @@ namespace server {
   }
 
 
-  inline Router::Callback Router::match(http::Method method, const std::string& path) {
-
+  inline Router::Callback Router::match(const http::Method method, const std::string& path) {
     auto routes = route_table_[method];
-    if (routes.empty())
-      throw Router_error("No routes for method " + http::method::str(method));
 
-    for (auto& route : routes)
-      if (std::regex_match(path.begin(), path.end(), route.expr))
+    if (routes.empty()) {
+      throw Router_error("No routes for method: [" + http::method::str(method) + "]");
+    }
+
+    for (auto& route : routes) {
+      if (std::regex_match(path.begin(), path.end(), route.expr)) {
         return route.callback;
+      }
+    }
 
     throw Router_error("No matching route for " + http::method::str(method) + " " + path);
   }
 
-
-
   /**--^----------- Implementation Details -----------^--**/
 
 } //< namespace server
-
 
 #endif //< ROUTER_HPP
