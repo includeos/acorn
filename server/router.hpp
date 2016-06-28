@@ -67,7 +67,7 @@ namespace server {
        *
        * |param| <g> : A resource generator
        */
-      Route(const char* ex, Generator g) : expr{ex}, generator{g} {}
+      Route(const std::string& ex, Generator g) : expr{ex}, generator{g} {}
     };
 
     /*
