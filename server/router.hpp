@@ -106,119 +106,173 @@ namespace server {
     /**
      * @brief Register a route for the {OPTIONS} HTTP method
      *
-     * @tparam {std::string} route : A pattern for a requested
-     * resource
+     * @tparam T route : A pattern for a requested resource
      *
      * @param generator : The representation generator
      *
      * @return The object that invoked this method
      */
-    template <typename Routee>
-    Router& on_options(Routee&& route, Generator generator);
+    template
+    <
+      typename T,
+      typename = std::enable_if_t
+                 <std::is_same
+                 <std::string, std::remove_reference_t
+                 <std::remove_const_t<T>>>::value>
+    >
+    Router& on_options(T&& route, Generator generator);
 
     /**
      * @brief Register a route for the {GET} HTTP method
      *
-     * @tparam {std::string} route : A pattern for a requested
-     * resource
+     * @tparam T route : A pattern for a requested resource
      *
      * @param generator : The representation generator
      *
      * @return The object that invoked this method
      */
-    template <typename Routee>
-    Router& on_get(Routee&& route, Generator generator);
+    template
+    <
+      typename T,
+      typename = std::enable_if_t
+                 <std::is_same
+                 <std::string, std::remove_reference_t
+                 <std::remove_const_t<T>>>::value>
+    >
+    Router& on_get(T&& route, Generator generator);
 
     /**
      * @brief Register a route for the {HEAD} HTTP method
      *
-     * @tparam {std::string} route : A pattern for a requested
-     * resource
+     * @tparam T route : A pattern for a requested resource
      *
      * @param generator : The representation generator
      *
      * @return The object that invoked this method
      */
-    template <typename Routee>
-    Router& on_head(Routee&& route, Generator generator);
+    template
+    <
+      typename T,
+      typename = std::enable_if_t
+                 <std::is_same
+                 <std::string, std::remove_reference_t
+                 <std::remove_const_t<T>>>::value>
+    >
+    Router& on_head(T&& route, Generator generator);
 
     /**
      * @brief Register a route for the {POST} HTTP method
      *
-     * @tparam {std::string} route : A pattern for a requested
-     * resource
+     * @tparam T route : A pattern for a requested resource
      *
      * @param generator : The representation generator
      *
      * @return The object that invoked this method
      */
-    template <typename Routee>
-    Router& on_post(Routee&& route, Generator generator);
+    template
+    <
+      typename T,
+      typename = std::enable_if_t
+                 <std::is_same
+                 <std::string, std::remove_reference_t
+                 <std::remove_const_t<T>>>::value>
+    >
+    Router& on_post(T&& route, Generator generator);
 
     /**
      * @brief Register a route for the {PUT} HTTP method
      *
-     * @tparam {std::string} route : A pattern for a requested
-     * resource
+     * @tparam T route : A pattern for a requested resource
      *
      * @param generator : The representation generator
      *
      * @return The object that invoked this method
      */
-    template <typename Routee>
-    Router& on_put(Routee&& route, Generator generator);
+    template
+    <
+      typename T,
+      typename = std::enable_if_t
+                 <std::is_same
+                 <std::string, std::remove_reference_t
+                 <std::remove_const_t<T>>>::value>
+    >
+    Router& on_put(T&& route, Generator generator);
 
     /**
      * @brief Register a route for the {DELETE} HTTP method
      *
-     * @tparam {std::string} route : A pattern for a requested
-     * resource
+     * @tparam T route : A pattern for a requested resource
      *
      * @param generator : The representation generator
      *
      * @return The object that invoked this method
      */
-    template <typename Routee>
-    Router& on_delete(Routee&& route, Generator generator);
+    template
+    <
+      typename T,
+      typename = std::enable_if_t
+                 <std::is_same
+                 <std::string, std::remove_reference_t
+                 <std::remove_const_t<T>>>::value>
+    >
+    Router& on_delete(T&& route, Generator generator);
 
     /**
      * @brief Register a route for the {TRACE} HTTP method
-     *
-     * @tparam {std::string} route : A pattern for a requested
-     * resource
+    *
+     * @tparam T route : A pattern for a requested resource
      *
      * @param generator : The representation generator
      *
      * @return The object that invoked this method
      */
-    template <typename Routee>
-    Router& on_trace(Routee&& route, Generator generator);
+    template
+    <
+      typename T,
+      typename = std::enable_if_t
+                 <std::is_same
+                 <std::string, std::remove_reference_t
+                 <std::remove_const_t<T>>>::value>
+    >
+    Router& on_trace(T&& route, Generator generator);
 
     /**
      * @brief Register a route for the {CONNECT} HTTP method
      *
-     * @tparam {std::string} route : A pattern for a requested
-     * resource
+     * @tparam T route : A pattern for a requested resource
      *
      * @param generator : The representation generator
      *
      * @return The object that invoked this method
      */
-    template <typename Routee>
-    Router& on_connect(Routee&& route, Generator generator);
+    template
+    <
+      typename T,
+      typename = std::enable_if_t
+                 <std::is_same
+                 <std::string, std::remove_reference_t
+                 <std::remove_const_t<T>>>::value>
+    >
+    Router& on_connect(T&& route, Generator generator);
 
     /**
      * @brief Register a route for the {PATCH} HTTP method
      *
-     * @tparam {std::string} route : A pattern for a requested
-     * resource
+     * @tparam T route : A pattern for a requested resource
      *
      * @param generator : The representation generator
      *
      * @return The object that invoked this method
      */
-    template <typename Routee>
-    Router& on_patch(Routee&& route, Generator generator);
+    template
+    <
+      typename T,
+      typename = std::enable_if_t
+                 <std::is_same
+                 <std::string, std::remove_reference_t
+                 <std::remove_const_t<T>>>::value>
+    >
+    Router& on_patch(T&& route, Generator generator);
 
     /**
      * @brief Install a new route table for route resolutions
@@ -262,58 +316,58 @@ namespace server {
 
   /**--v----------- Implementation Details -----------v--**/
 
-  template <typename Routee>
-  inline Router& Router::on_options(Routee&& route, Generator generator) {
-    route_table_[http::OPTIONS].emplace_back(std::forward<Routee>(route), generator);
+  template <typename T, typename>
+  inline Router& Router::on_options(T&& route, Generator generator) {
+    route_table_[http::OPTIONS].emplace_back(std::forward<T>(route), generator);
     return *this;
   }
 
-  template <typename Routee>
-  inline Router& Router::on_get(Routee&& route, Generator generator) {
-    route_table_[http::GET].emplace_back(std::forward<Routee>(route),  generator);
+  template <typename T, typename>
+  inline Router& Router::on_get(T&& route, Generator generator) {
+    route_table_[http::GET].emplace_back(std::forward<T>(route),  generator);
     return *this;
   }
 
-  template <typename Routee>
-  inline Router& Router::on_head(Routee&& route, Generator generator) {
-    route_table_[http::HEAD].emplace_back(std::forward<Routee>(route), generator);
+  template <typename T, typename>
+  inline Router& Router::on_head(T&& route, Generator generator) {
+    route_table_[http::HEAD].emplace_back(std::forward<T>(route), generator);
     return *this;
   }
 
-  template <typename Routee>
-  inline Router& Router::on_post(Routee&& route, Generator generator) {
-    route_table_[http::POST].emplace_back(std::forward<Routee>(route), generator);
+  template <typename T, typename>
+  inline Router& Router::on_post(T&& route, Generator generator) {
+    route_table_[http::POST].emplace_back(std::forward<T>(route), generator);
     return *this;
   }
 
-  template <typename Routee>
-  inline Router& Router::on_put(Routee&& route, Generator generator) {
-    route_table_[http::PUT].emplace_back(std::forward<Routee>(route), generator);
+  template <typename T, typename>
+  inline Router& Router::on_put(T&& route, Generator generator) {
+    route_table_[http::PUT].emplace_back(std::forward<T>(route), generator);
     return *this;
   }
 
 
-  template <typename Routee>
-  inline Router& Router::on_delete(Routee&& route, Generator generator) {
-    route_table_[http::DELETE].emplace_back(std::forward<Routee>(route), generator);
+  template <typename T, typename>
+  inline Router& Router::on_delete(T&& route, Generator generator) {
+    route_table_[http::DELETE].emplace_back(std::forward<T>(route), generator);
     return *this;
   }
 
-  template <typename Routee>
-  inline Router& Router::on_trace(Routee&& route, Generator generator) {
-    route_table_[http::TRACE].emplace_back(std::forward<Routee>(route), generator);
+  template <typename T, typename>
+  inline Router& Router::on_trace(T&& route, Generator generator) {
+    route_table_[http::TRACE].emplace_back(std::forward<T>(route), generator);
     return *this;
   }
 
-  template <typename Routee>
-  inline Router& Router::on_connect(Routee&& route, Generator generator) {
-    route_table_[http::CONNECT].emplace_back(std::forward<Routee>(route), generator);
+  template <typename T, typename>
+  inline Router& Router::on_connect(T&& route, Generator generator) {
+    route_table_[http::CONNECT].emplace_back(std::forward<T>(route), generator);
     return *this;
   }
 
-  template <typename Routee>
-  inline Router& Router::on_patch(Routee&& route, Generator generator) {
-    route_table_[http::PATCH].emplace_back(std::forward<Routee>(route), generator);
+  template <typename T, typename>
+  inline Router& Router::on_patch(T&& route, Generator generator) {
+    route_table_[http::PATCH].emplace_back(std::forward<T>(route), generator);
     return *this;
   }
 
