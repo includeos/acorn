@@ -386,7 +386,7 @@ namespace server {
 
     for (auto& route : routes) {
       if (std::regex_match(path.begin(), path.end(), route.expr))
-        return route.callback;
+        return route.generator;
     }
 
     throw Router_error("No matching route for " + http::method::str(method) + " " + path);
