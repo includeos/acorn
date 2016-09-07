@@ -26,18 +26,29 @@
 
 namespace dashboard {
 
+/**
+ *
+ */
 class Status : public Component {
-
 public:
 
+  /**
+   *
+   */
   static Status& instance() {
     static Status s;
     return s;
   }
 
+  /**
+   *
+   */
   std::string key() const override
   { return "status"; }
 
+  /**
+   *
+   */
   void serialize(Writer& writer) const override {
     writer.StartObject();
 
@@ -68,15 +79,9 @@ public:
   }
 
 private:
-
   Status() {};
+}; //< class Status
 
-};
+} //< namespace dashboard
 
-} // < namespace dashboard
-
-#endif
-
-
-
-
+#endif //< DASHBOARD_COMPONENTS_STATUS_HPP
