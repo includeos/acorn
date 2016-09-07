@@ -26,38 +26,74 @@
 
 namespace dashboard {
 
+/**
+ *
+ */
 class Dashboard {
-
+private:
+  // Internal class type aliases
   using ComponentCollection = std::unordered_map<std::string, const Component*>;
-
+  //----------------------------------------
 public:
+  /**
+   *
+   */
   Dashboard(size_t buffer_capacity = 4096);
 
+  /**
+   *
+   */
   const server::Router& router() const
   { return router_; }
 
+  /**
+   *
+   */
   void add(const Component&);
 
+  /**
+   *
+   */
   template <typename Comp, typename... Args>
   inline void construct(Args&&...);
 
 private:
-
+  //------------------------------
+  // Class data members
   server::Router router_;
   WriteBuffer buffer_;
   Writer writer_;
 
   ComponentCollection components_;
+  //------------------------------
 
+  /**
+   *
+   */
   void setup_routes();
 
+  /**
+   *
+   */
   void serve(server::Request_ptr, server::Response_ptr);
+
+  /**
+   *
+   */
   void serialize(Writer&) const;
 
+  /**
+   *
+   */
   void send_buffer(server::Response_ptr);
-  void reset_writer();
 
-};
+  /**
+   *
+   */
+  void reset_writer();
+}; //< class Dashboard
+
+/**--v----------- Implementation Details -----------v--**/
 
 inline void Dashboard::add(const Component& c) {
   components_.emplace(c.key(), &c);
@@ -80,6 +116,8 @@ inline void Dashboard::construct(Args&&... args) {
   add(c);
 }
 
-} // < namespace dashboard
+/**--^----------- Implementation Details -----------^--**/
 
-#endif
+} //< namespace dashboard
+
+#endif //< DASHBOARD_DASHBOARD_HPP
