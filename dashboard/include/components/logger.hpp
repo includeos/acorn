@@ -25,17 +25,28 @@
 
 namespace dashboard {
 
+/**
+ *
+ */
 class Logger : public Component {
-
 public:
 
+  /**
+   *
+   */
   Logger(::Logger& logger, size_t entries = 20)
    : logger_{logger}, entries_{entries}
   {}
 
+  /**
+   *
+   */
   std::string key() const override
   { return "logger"; }
 
+  /**
+   *
+   */
   void serialize(Writer& writer) const override {
     writer.StartArray();
     auto entries = logger_.entries(entries_);
@@ -53,15 +64,13 @@ public:
   }
 
 private:
+  //------------------------------
+  // Class data members
   const ::Logger& logger_;
   const size_t entries_;
+  //------------------------------
+}; //< class Logger
 
-};
+} //< namespace dashboard
 
-} // < namespace dashboard
-
-#endif
-
-
-
-
+#endif //< DASHBOARD_COMPONENTS_LOGGER_HPP
