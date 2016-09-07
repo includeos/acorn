@@ -25,18 +25,29 @@
 
 namespace dashboard {
 
+/**
+ *
+ */
 class StackSampler : public Component {
-
 public:
 
+  /**
+   *
+   */
   static StackSampler& instance() {
     static StackSampler s;
     return s;
   }
 
+  /**
+   *
+   */
   std::string key() const override
   { return "stack_sampler"; }
 
+  /**
+   *
+   */
   void serialize(Writer& writer) const override {
     auto samples = ::StackSampler::results(sample_size_);
     int total = ::StackSampler::samples_total();
@@ -66,25 +77,25 @@ public:
     writer.EndArray();
   }
 
+  /**
+   *
+   */
   void set_sample_size(int N)
   { sample_size_ = N; }
 
 private:
+  //------------------------------
+  // Class data members
+  int sample_size_;
+  //------------------------------
 
   StackSampler()
   : sample_size_{12}
   {
     ::StackSampler::begin();
   }
+}; //< class StackSampler
 
-  int sample_size_;
+} //< namespace dashboard
 
-};
-
-} // < namespace dashboard
-
-#endif
-
-
-
-
+#endif //< DASHBOARD_COMPONENTS_STACKSAMPLER_HPP
