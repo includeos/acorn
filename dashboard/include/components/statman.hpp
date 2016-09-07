@@ -25,17 +25,28 @@
 
 namespace dashboard {
 
+/**
+ *
+ */
 class Statman : public Component {
-
 public:
 
+  /**
+   *
+   */
   Statman(::Statman& statman)
    : statman_{statman}
   {}
 
+  /**
+   *
+   */
   std::string key() const override
   { return "statman"; }
 
+  /**
+   *
+   */
   void serialize(Writer& writer) const override {
     writer.StartArray();
     for(auto it = statman_.begin(); it != statman_.last_used(); ++it) {
@@ -73,13 +84,12 @@ public:
   }
 
 private:
+  //------------------------------
+  // Class data members
   ::Statman& statman_;
-
-};
+  //------------------------------
+}; //< class Statman
 
 } // < namespace dashboard
 
-#endif
-
-
-
+#endif //< DASHBOARD_COMPONENTS_STATMAN_HPP
