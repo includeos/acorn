@@ -23,18 +23,28 @@
 
 namespace dashboard {
 
+/**
+ *
+ */
 class Component {
-
 public:
 
+  /**
+   *
+   */
   virtual std::string key() const = 0;
 
-  virtual void serialize(dashboard::Writer&) const = 0;
+  /**
+   *
+   */
+  virtual void serialize(Writer&) const = 0;
 
-  virtual ~Component() {}
+  /**
+   *
+   */
+  virtual ~Component() = default;
+}; //< class Component
 
-};
+} //< namespace dashboard
 
-}
-
-#endif
+#endif //< DASHBOARD_COMPONENT_HPP
