@@ -25,18 +25,29 @@
 
 namespace dashboard {
 
+/**
+ *
+ */
 class Memmap : public Component {
-
 public:
 
+  /**
+   *
+   */
   static Memmap& instance() {
     static Memmap m;
     return m;
   }
 
+  /**
+   *
+   */
   std::string key() const override
   { return "memmap"; }
 
+  /**
+   *
+   */
   void serialize(Writer& writer) const override {
     writer.StartArray();
     for (auto i : OS::memory_map())
@@ -66,13 +77,8 @@ public:
 
 private:
   Memmap() {}
+}; //< class Memmap
 
-};
+} //< namespace dashboard
 
-} // < namespace dashboard
-
-#endif
-
-
-
-
+#endif //< DASHBOARD_COMPONENTS_MEMMAP_HPP
