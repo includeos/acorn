@@ -71,11 +71,8 @@ public:
   }
 
 private:
-  //------------------------------
-  // Class data members
   const ::Logger& logger_;
-  const size_t entries_;
-  //------------------------------
+  const size_t    entries_;
 }; //< class Logger
 
 } //< namespace dashboard
