@@ -26,13 +26,11 @@
 namespace dashboard {
 
 /**
- * This class represents a component that can be installed into the
- * dashboard. It provides VM statistics from various subsystems within
+ * This component provides VM statistics from various subsystems within
  * the operating system
  */
 class Statman : public Component {
 public:
-
   /**
    * Constructor that references the statistics provider from within
    * the operating system
@@ -44,7 +42,7 @@ public:
   /**
    * Get the component identifier
    *
-   * @return The component identifier as a {std::string} object
+   * @return The component identifier
    */
   std::string key() const override
   { return "statman"; }
@@ -56,7 +54,6 @@ public:
    * The writer to serialize the component to
    */
   void serialize(Writer& writer) const override;
-
 private:
   ::Statman& statman_;
 }; //< class Statman
