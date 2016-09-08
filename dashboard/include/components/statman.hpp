@@ -60,7 +60,7 @@ private:
 
 /**--v----------- Implementation Details -----------v--**/
 
-inline void serialize(Writer& writer) const {
+inline void Statman::serialize(Writer& writer) const {
   writer.StartArray();
   for(auto it = statman_.begin(); it != statman_.last_used(); ++it) {
     auto& stat = *it;
