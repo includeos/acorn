@@ -19,9 +19,9 @@
 #ifndef DASHBOARD_COMPONENTS_LOGGER_HPP
 #define DASHBOARD_COMPONENTS_LOGGER_HPP
 
-#include "../component.hpp"
-
 #include <logger/logger.hpp>
+
+#include "../component.hpp"
 
 namespace dashboard {
 
