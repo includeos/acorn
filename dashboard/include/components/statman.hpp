@@ -19,9 +19,9 @@
 #ifndef DASHBOARD_COMPONENTS_STATMAN_HPP
 #define DASHBOARD_COMPONENTS_STATMAN_HPP
 
-#include "../component.hpp"
-
 #include <statman>
+
+#include "../component.hpp"
 
 namespace dashboard {
 
