@@ -37,7 +37,9 @@ private:
   using Component_collection = std::unordered_map<std::string, const Component*>;
 public:
   /**
-   *
+   * Construct an object of this type by specifying the size of the
+   * underlying buffer that holds the information for the installed
+   * components
    */
   Dashboard(const size_t buffer_capacity = 4096);
 
