@@ -34,7 +34,7 @@ public:
   /**
    *
    */
-  Statman(::Statman& statman)
+  Statman(::Statman& statman) noexcept
    : statman_{statman}
   {}
 
