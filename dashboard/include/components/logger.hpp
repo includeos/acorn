@@ -41,7 +41,9 @@ public:
   {}
 
   /**
+   * Get the component identifier
    *
+   * @return The component identifier as a {std::string} object
    */
   std::string key() const override
   { return "logger"; }
