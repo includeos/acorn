@@ -54,26 +54,32 @@ public:
    * @param
    * The writer to serialize the component to
    */
-  void serialize(Writer& writer) const override {
-    writer.StartArray();
-    auto entries = logger_.entries(entries_);
-
-    auto it = entries.begin();
-    // Temporary hack to only send N latest
-    const size_t N = 50;
-    if(entries.size() > N)
-      it += entries.size() - N;
-
-    while(it != entries.end())
-      writer.String(*it++);
-
-    writer.EndArray();
-  }
+  void serialize(Writer& writer) const override;
 
 private:
   const ::Logger& logger_;
   const size_t    entries_;
 }; //< class Logger
+
+/**--v----------- Implementation Details -----------v--**/
+
+inline void Logger::serialize(Writer& writer) const {
+  writer.StartArray();
+  auto entries = logger_.entries(entries_);
+
+  auto it = entries.begin();
+  // Temporary hack to only send N latest
+  const size_t N = 50;
+  if(entries.size() > N)
+    it += entries.size() - N;
+
+  while(it != entries.end())
+    writer.String(*it++);
+
+  writer.EndArray();
+}
+
+/**--^----------- Implementation Details -----------^--**/
 
 } //< namespace dashboard
 
