@@ -26,7 +26,9 @@
 namespace dashboard {
 
 /**
- *
+ * This class represents a component that can be installed into the
+ * dashboard. It provides VM statistics from various subsystems within
+ * the operating system
  */
 class Statman : public Component {
 public:
