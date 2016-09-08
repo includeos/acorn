@@ -41,7 +41,9 @@ class Status : public Component {
 public:
 
   /**
+   * Get the sole instance of this class
    *
+   * @return The sole instance of this class
    */
   static Status& instance() {
     static Status s;
