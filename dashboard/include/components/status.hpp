@@ -39,7 +39,6 @@ namespace dashboard {
  */
 class Status : public Component {
 public:
-
   /**
    * Get the sole instance of this class
    *
@@ -65,14 +64,13 @@ public:
    * The writer to serialize the component to
    */
   void serialize(Writer& writer) const override;
-
 private:
   Status() = default;
 }; //< class Status
 
 /**--v----------- Implementation Details -----------v--**/
 
-inline void Status::serialize(Writer& writer) const override {
+inline void Status::serialize(Writer& writer) const {
   writer.StartObject();
 
   writer.Key("version");
@@ -92,8 +90,7 @@ inline void Status::serialize(Writer& writer) const override {
 
   writer.Key("current_time");
   long hest = RTC::now();
-  struct tm* tt =
-    gmtime (&hest);
+  struct tm* tt = gmtime (&hest);
   char datebuf[32];
   strftime(datebuf, sizeof datebuf, "%FT%TZ", tt);
   writer.String(datebuf);
