@@ -59,7 +59,10 @@ public:
   { return "status"; }
 
   /**
+   * Serialize this component to the specified writer as JSON
    *
+   * @param
+   * The writer to serialize the component to
    */
   void serialize(Writer& writer) const override {
     writer.StartObject();
