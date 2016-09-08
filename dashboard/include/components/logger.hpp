@@ -26,8 +26,7 @@
 namespace dashboard {
 
 /**
- * This class represents a component that can be installed into the
- * dashboard. It provides information about the activity that's
+ * This component provides information about the activity that's
  * occurring within the appliance
  */
 class Logger : public Component {
@@ -43,7 +42,7 @@ public:
   /**
    * Get the component identifier
    *
-   * @return The component identifier as a {std::string} object
+   * @return The component identifier
    */
   std::string key() const override
   { return "logger"; }
