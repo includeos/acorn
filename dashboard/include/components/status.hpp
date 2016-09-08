@@ -19,10 +19,10 @@
 #ifndef DASHBOARD_COMPONENTS_STATUS_HPP
 #define DASHBOARD_COMPONENTS_STATUS_HPP
 
-#include "../component.hpp"
-
 #include <os>
 #include <rtc>
+
+#include "../component.hpp"
 
 namespace dashboard {
 
