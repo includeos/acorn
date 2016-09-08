@@ -30,9 +30,10 @@ namespace dashboard {
  */
 class Memmap : public Component {
 public:
-
   /**
+   * Get the sole instance of this class
    *
+   * @return The sole instance of this class
    */
   static Memmap& instance() {
     static Memmap m;
