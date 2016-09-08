@@ -28,11 +28,9 @@
 namespace dashboard {
 
 /**
- * This class represents a component that can be installed into the
- * dashboard. It provides real-time information about the CPU usage
+ * This component provides CPU usage information
  */
 class CPUsage : public Component {
-
 public:
 
   CPUsage(::IRQ_manager& manager, Timers::duration_t when, Timers::duration_t interval)
