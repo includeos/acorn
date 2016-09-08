@@ -19,11 +19,11 @@
 #ifndef DASHBOARD_COMPONENTS_CPUSAGE_HPP
 #define DASHBOARD_COMPONENTS_CPUSAGE_HPP
 
-#include "../component.hpp"
-
 #include <timers>
 #include <delegate>
 #include <kernel/irq_manager.hpp>
+
+#include "../component.hpp"
 
 namespace dashboard {
 
