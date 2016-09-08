@@ -40,7 +40,9 @@ public:
   }
 
   /**
+   * Get the component identifier
    *
+   * @return The component identifier
    */
   std::string key() const override
   { return "memmap"; }
