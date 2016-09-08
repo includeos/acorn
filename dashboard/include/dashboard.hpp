@@ -26,7 +26,11 @@
 namespace dashboard {
 
 /**
+ * This class is used to provide real-time information about the
+ * state of the appliance
  *
+ * It can be configured by installing custom components which are
+ * user defined types that implement the dashboard::Component interface
  */
 class Dashboard {
 private:
