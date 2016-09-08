@@ -26,7 +26,7 @@
 namespace dashboard {
 
 /**
- *
+ * This component provides the VM's memory mappings
  */
 class Memmap : public Component {
 public:
