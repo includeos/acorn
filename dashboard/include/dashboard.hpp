@@ -39,7 +39,7 @@ public:
   /**
    *
    */
-  Dashboard(size_t buffer_capacity = 4096);
+  Dashboard(const size_t buffer_capacity = 4096);
 
   /**
    *
