@@ -64,38 +64,44 @@ public:
    * @param
    * The writer to serialize the component to
    */
-  void serialize(Writer& writer) const override {
-    writer.StartObject();
-
-    writer.Key("version");
-    writer.String(OS::version());
-
-    writer.Key("service");
-    writer.String(Service::name());
-
-    writer.Key("uptime");
-    writer.Int64(OS::uptime());
-
-    writer.Key("heap_usage");
-    writer.Uint64(OS::heap_usage());
-
-    writer.Key("cpu_freq");
-    writer.Double(OS::cpu_freq().count());
-
-    writer.Key("current_time");
-    long hest = RTC::now();
-    struct tm* tt =
-      gmtime (&hest);
-    char datebuf[32];
-    strftime(datebuf, sizeof datebuf, "%FT%TZ", tt);
-    writer.String(datebuf);
-
-    writer.EndObject();
-  }
+  void serialize(Writer& writer) const override;
 
 private:
   Status() = default;
 }; //< class Status
+
+/**--v----------- Implementation Details -----------v--**/
+
+inline void Status::serialize(Writer& writer) const override {
+  writer.StartObject();
+
+  writer.Key("version");
+  writer.String(OS::version());
+
+  writer.Key("service");
+  writer.String(Service::name());
+
+  writer.Key("uptime");
+  writer.Int64(OS::uptime());
+
+  writer.Key("heap_usage");
+  writer.Uint64(OS::heap_usage());
+
+  writer.Key("cpu_freq");
+  writer.Double(OS::cpu_freq().count());
+
+  writer.Key("current_time");
+  long hest = RTC::now();
+  struct tm* tt =
+    gmtime (&hest);
+  char datebuf[32];
+  strftime(datebuf, sizeof datebuf, "%FT%TZ", tt);
+  writer.String(datebuf);
+
+  writer.EndObject();
+}
+
+/**--^----------- Implementation Details -----------^--**/
 
 } //< namespace dashboard
 
