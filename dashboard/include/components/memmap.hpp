@@ -48,7 +48,10 @@ public:
   { return "memmap"; }
 
   /**
+   * Serialize this component to the specified writer as JSON
    *
+   * @param
+   * The writer to serialize the component to
    */
   void serialize(Writer& writer) const override {
     writer.StartArray();
