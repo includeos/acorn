@@ -21,9 +21,9 @@
 
 #include "../component.hpp"
 
-#include <kernel/irq_manager.hpp>
 #include <timers>
 #include <delegate>
+#include <kernel/irq_manager.hpp>
 
 namespace dashboard {
 
