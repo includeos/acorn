@@ -44,7 +44,10 @@ public:
   Dashboard(const size_t buffer_capacity = 4096);
 
   /**
+   * Get the underlying router that stores configuration for the
+   * dashboard's service end-points
    *
+   * @return The dashboard's router
    */
   const server::Router& router() const noexcept
   { return router_; }
