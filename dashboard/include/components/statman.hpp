@@ -39,13 +39,18 @@ public:
   {}
 
   /**
+   * Get the component identifier
    *
+   * @return The component identifier as a {std::string} object
    */
   std::string key() const override
   { return "statman"; }
 
   /**
+   * Serialize this component to the specified writer as JSON
    *
+   * @param
+   * The writer to serialize the component to
    */
   void serialize(Writer& writer) const override {
     writer.StartArray();
@@ -84,12 +89,9 @@ public:
   }
 
 private:
-  //------------------------------
-  // Class data members
   ::Statman& statman_;
-  //------------------------------
 }; //< class Statman
 
-} // < namespace dashboard
+} //< namespace dashboard
 
 #endif //< DASHBOARD_COMPONENTS_STATMAN_HPP
