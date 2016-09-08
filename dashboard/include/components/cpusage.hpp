@@ -27,6 +27,10 @@
 
 namespace dashboard {
 
+/**
+ * This class represents a component that can be installed into the
+ * dashboard. It provides real-time information about the CPU usage
+ */
 class CPUsage : public Component {
 
 public:
