@@ -27,7 +27,15 @@
 namespace dashboard {
 
 /**
- *
+ * This class represents a component that can be installed into the
+ * dashboard. It provides information relating to the status of the
+ * VM's operating system such as the following:
+ * - Operating system's version number
+ * - The name of the running service
+ * - Real-time information about the service's uptime
+ * - The CPU's frequency
+ * - Real-time information about the service's heap usage (memory related)
+ * - A real-time clock providing the current date and time
  */
 class Status : public Component {
 public:
