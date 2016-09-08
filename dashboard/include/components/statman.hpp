@@ -34,7 +34,8 @@ class Statman : public Component {
 public:
 
   /**
-   *
+   * Constructor that references the statistics provider from within
+   * the operating system
    */
   Statman(::Statman& statman) noexcept
    : statman_{statman}
