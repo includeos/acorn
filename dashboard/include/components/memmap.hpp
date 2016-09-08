@@ -19,9 +19,9 @@
 #ifndef DASHBOARD_COMPONENTS_MEMMAP_HPP
 #define DASHBOARD_COMPONENTS_MEMMAP_HPP
 
-#include "../component.hpp"
-
 #include <os>
+
+#include "../component.hpp"
 
 namespace dashboard {
 
