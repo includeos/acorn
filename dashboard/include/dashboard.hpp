@@ -46,7 +46,7 @@ public:
   /**
    *
    */
-  const server::Router& router() const
+  const server::Router& router() const noexcept
   { return router_; }
 
   /**
