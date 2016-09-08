@@ -52,45 +52,51 @@ public:
    * @param
    * The writer to serialize the component to
    */
-  void serialize(Writer& writer) const override {
-    writer.StartArray();
-    for(auto it = statman_.begin(); it != statman_.last_used(); ++it) {
-      auto& stat = *it;
-      writer.StartObject();
-
-      writer.Key("name");
-      writer.String(stat.name());
-
-      writer.Key("value");
-      std::string type = "";
-
-      switch(stat.type()) {
-        case Stat::UINT64:  writer.Uint64(stat.get_uint64());
-                            type = "UINT64";
-                            break;
-        case Stat::UINT32:  writer.Uint(stat.get_uint32());
-                            type = "UINT32";
-                            break;
-        case Stat::FLOAT:   writer.Double(stat.get_float());
-                            type = "FLOAT";
-                            break;
-      }
-
-      writer.Key("type");
-      writer.String(type);
-
-      writer.Key("index");
-      writer.Int(stat.index());
-
-      writer.EndObject();
-    }
-
-    writer.EndArray();
-  }
+  void serialize(Writer& writer) const override;
 
 private:
   ::Statman& statman_;
 }; //< class Statman
+
+/**--v----------- Implementation Details -----------v--**/
+
+inline void serialize(Writer& writer) const {
+  writer.StartArray();
+  for(auto it = statman_.begin(); it != statman_.last_used(); ++it) {
+    auto& stat = *it;
+    writer.StartObject();
+
+    writer.Key("name");
+    writer.String(stat.name());
+
+    writer.Key("value");
+    std::string type = "";
+
+    switch(stat.type()) {
+      case Stat::UINT64:  writer.Uint64(stat.get_uint64());
+                          type = "UINT64";
+                          break;
+      case Stat::UINT32:  writer.Uint(stat.get_uint32());
+                          type = "UINT32";
+                          break;
+      case Stat::FLOAT:   writer.Double(stat.get_float());
+                          type = "FLOAT";
+                          break;
+    }
+
+    writer.Key("type");
+    writer.String(type);
+
+    writer.Key("index");
+    writer.Int(stat.index());
+
+    writer.EndObject();
+  }
+
+  writer.EndArray();
+}
+
+/**--^----------- Implementation Details -----------^--**/
 
 } //< namespace dashboard
 
