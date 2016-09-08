@@ -54,36 +54,41 @@ public:
    * @param
    * The writer to serialize the component to
    */
-  void serialize(Writer& writer) const override {
-    writer.StartArray();
-    for (auto i : OS::memory_map())
-    {
-      auto& entry = i.second;
-      writer.StartObject();
-
-      writer.Key("name");
-      writer.String(entry.name());
-
-      writer.Key("addr_start");
-      writer.Uint(entry.addr_start());
-
-      writer.Key("addr_end");
-      writer.Uint(entry.addr_end());
-
-      writer.Key("in_use");
-      writer.Uint(entry.in_use());
-
-      writer.Key("description");
-      writer.String(entry.description());
-
-      writer.EndObject();
-    }
-    writer.EndArray();
-  }
-
+  void serialize(Writer& writer) const override;
 private:
   Memmap() {}
 }; //< class Memmap
+
+/**--v----------- Implementation Details -----------v--**/
+
+inline void Memmap::serialize(Writer& writer) const {
+  writer.StartArray();
+  for (auto i : OS::memory_map())
+  {
+    auto& entry = i.second;
+    writer.StartObject();
+
+    writer.Key("name");
+    writer.String(entry.name());
+
+    writer.Key("addr_start");
+    writer.Uint(entry.addr_start());
+
+    writer.Key("addr_end");
+    writer.Uint(entry.addr_end());
+
+    writer.Key("in_use");
+    writer.Uint(entry.in_use());
+
+    writer.Key("description");
+    writer.String(entry.description());
+
+    writer.EndObject();
+  }
+  writer.EndArray();
+}
+
+/**--^----------- Implementation Details -----------^--**/
 
 } //< namespace dashboard
 
