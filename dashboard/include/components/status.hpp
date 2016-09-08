@@ -94,7 +94,7 @@ public:
   }
 
 private:
-  Status() {};
+  Status() = default;
 }; //< class Status
 
 } //< namespace dashboard
