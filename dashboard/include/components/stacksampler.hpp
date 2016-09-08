@@ -19,9 +19,9 @@
 #ifndef DASHBOARD_COMPONENTS_STACKSAMPLER_HPP
 #define DASHBOARD_COMPONENTS_STACKSAMPLER_HPP
 
-#include "../component.hpp"
-
 #include <profile>
+
+#include "../component.hpp"
 
 namespace dashboard {
 
