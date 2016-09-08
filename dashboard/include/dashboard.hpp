@@ -30,9 +30,7 @@ namespace dashboard {
  */
 class Dashboard {
 private:
-  // Internal class type aliases
-  using ComponentCollection = std::unordered_map<std::string, const Component*>;
-  //----------------------------------------
+  using Component_collection = std::unordered_map<std::string, const Component*>;
 public:
   /**
    *
@@ -57,14 +55,11 @@ public:
   inline void construct(Args&&...);
 
 private:
-  //------------------------------
-  // Class data members
   server::Router router_;
   WriteBuffer buffer_;
   Writer writer_;
 
-  ComponentCollection components_;
-  //------------------------------
+  Component_collection components_;
 
   /**
    *
