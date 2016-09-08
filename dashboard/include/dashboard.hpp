@@ -20,9 +20,8 @@
 #define DASHBOARD_DASHBOARD_HPP
 
 #include <router.hpp>
-#include <json.hpp>
+
 #include "component.hpp"
-#include "common.hpp"
 
 namespace dashboard {
 
