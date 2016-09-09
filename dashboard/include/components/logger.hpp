@@ -19,49 +19,67 @@
 #ifndef DASHBOARD_COMPONENTS_LOGGER_HPP
 #define DASHBOARD_COMPONENTS_LOGGER_HPP
 
-#include "../component.hpp"
-
 #include <logger/logger.hpp>
+
+#include "../component.hpp"
 
 namespace dashboard {
 
+/**
+ * This component provides information about the activity that's
+ * occurring within the appliance
+ */
 class Logger : public Component {
-
 public:
 
+  /**
+   *
+   */
   Logger(::Logger& logger, size_t entries = 20)
    : logger_{logger}, entries_{entries}
   {}
 
+  /**
+   * Get the component identifier
+   *
+   * @return The component identifier
+   */
   std::string key() const override
   { return "logger"; }
 
-  void serialize(Writer& writer) const override {
-    writer.StartArray();
-    auto entries = logger_.entries(entries_);
-
-    auto it = entries.begin();
-    // Temporary hack to only send N latest
-    const size_t N = 50;
-    if(entries.size() > N)
-      it += entries.size() - N;
-
-    while(it != entries.end())
-      writer.String(*it++);
-
-    writer.EndArray();
-  }
+  /**
+   * Serialize this component to the specified writer as JSON
+   *
+   * @param
+   * The writer to serialize the component to
+   */
+  void serialize(Writer& writer) const override;
 
 private:
   const ::Logger& logger_;
-  const size_t entries_;
+  const size_t    entries_;
+}; //< class Logger
 
-};
+/**--v----------- Implementation Details -----------v--**/
 
-} // < namespace dashboard
+inline void Logger::serialize(Writer& writer) const {
+  writer.StartArray();
+  auto entries = logger_.entries(entries_);
 
-#endif
+  auto it = entries.begin();
+  // Temporary hack to only send N latest
+  const size_t N = 50;
+  if(entries.size() > N)
+    it += entries.size() - N;
 
+  while(it != entries.end())
+    writer.String(*it++);
 
+  writer.EndArray();
+}
 
+/**--^----------- Implementation Details -----------^--**/
 
+} //< namespace dashboard
+
+#endif //< DASHBOARD_COMPONENTS_LOGGER_HPP

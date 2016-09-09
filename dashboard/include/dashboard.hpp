@@ -20,44 +20,83 @@
 #define DASHBOARD_DASHBOARD_HPP
 
 #include <router.hpp>
-#include <json.hpp>
+
 #include "component.hpp"
-#include "common.hpp"
 
 namespace dashboard {
 
+/**
+ * This class is used to provide real-time information about the
+ * state of the appliance
+ *
+ * It can be configured by installing custom components which are
+ * user defined types that implement the dashboard::Component interface
+ */
 class Dashboard {
-
-  using ComponentCollection = std::unordered_map<std::string, const Component*>;
-
+private:
+  using Component_collection = std::unordered_map<std::string, const Component*>;
 public:
-  Dashboard(size_t buffer_capacity = 4096);
+  /**
+   * Construct an object of this type by specifying the size of the
+   * underlying buffer that holds the information for the installed
+   * components
+   */
+  Dashboard(const size_t buffer_capacity = 4096);
 
-  const server::Router& router() const
+  /**
+   * Get the underlying router that stores configuration for the
+   * dashboard's service end-points
+   *
+   * @return The dashboard's router
+   */
+  const server::Router& router() const noexcept
   { return router_; }
 
+  /**
+   *
+   */
   void add(const Component&);
 
+  /**
+   *
+   */
   template <typename Comp, typename... Args>
   inline void construct(Args&&...);
 
 private:
-
   server::Router router_;
   WriteBuffer buffer_;
   Writer writer_;
 
-  ComponentCollection components_;
+  Component_collection components_;
 
+  /**
+   *
+   */
   void setup_routes();
 
+  /**
+   *
+   */
   void serve(server::Request_ptr, server::Response_ptr);
+
+  /**
+   *
+   */
   void serialize(Writer&) const;
 
+  /**
+   *
+   */
   void send_buffer(server::Response_ptr);
-  void reset_writer();
 
-};
+  /**
+   *
+   */
+  void reset_writer();
+}; //< class Dashboard
+
+/**--v----------- Implementation Details -----------v--**/
 
 inline void Dashboard::add(const Component& c) {
   components_.emplace(c.key(), &c);
@@ -80,6 +119,8 @@ inline void Dashboard::construct(Args&&... args) {
   add(c);
 }
 
-} // < namespace dashboard
+/**--^----------- Implementation Details -----------^--**/
 
-#endif
+} //< namespace dashboard
+
+#endif //< DASHBOARD_DASHBOARD_HPP

@@ -19,16 +19,18 @@
 #ifndef DASHBOARD_COMPONENTS_CPUSAGE_HPP
 #define DASHBOARD_COMPONENTS_CPUSAGE_HPP
 
-#include "../component.hpp"
-
-#include <kernel/irq_manager.hpp>
 #include <timers>
 #include <delegate>
+#include <kernel/irq_manager.hpp>
+
+#include "../component.hpp"
 
 namespace dashboard {
 
+/**
+ * This component provides CPU usage information
+ */
 class CPUsage : public Component {
-
 public:
 
   CPUsage(::IRQ_manager& manager, Timers::duration_t when, Timers::duration_t interval)

@@ -23,18 +23,37 @@
 
 namespace dashboard {
 
+/**
+ * This is an interface used to recognize an entity that can be
+ * added to the dashboard
+ *
+ * To create a new dashboard component simply inherit this class
+ * and override the abstract methods
+ */
 class Component {
-
 public:
-
+  /**
+   * Provide a component identifier which will be used as a key
+   * within the dashboard to locate the component
+   *
+   * @return The component identifier as a {std::string} object
+   */
   virtual std::string key() const = 0;
 
-  virtual void serialize(dashboard::Writer&) const = 0;
+  /**
+   * Serialize the component to the specified writer as JSON
+   *
+   * @param
+   * The writer to serialize the component to
+   */
+  virtual void serialize(Writer&) const = 0;
 
-  virtual ~Component() {}
+  /**
+   * Default destructor
+   */
+  virtual ~Component() = default;
+}; //< class Component
 
-};
+} //< namespace dashboard
 
-}
-
-#endif
+#endif //< DASHBOARD_COMPONENT_HPP

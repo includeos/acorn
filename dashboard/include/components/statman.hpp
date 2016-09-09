@@ -19,67 +19,85 @@
 #ifndef DASHBOARD_COMPONENTS_STATMAN_HPP
 #define DASHBOARD_COMPONENTS_STATMAN_HPP
 
-#include "../component.hpp"
-
 #include <statman>
+
+#include "../component.hpp"
 
 namespace dashboard {
 
+/**
+ * This component provides VM statistics from various subsystems within
+ * the operating system
+ */
 class Statman : public Component {
-
 public:
-
-  Statman(::Statman& statman)
+  /**
+   * Constructor that references the statistics provider from within
+   * the operating system
+   */
+  Statman(::Statman& statman) noexcept
    : statman_{statman}
   {}
 
+  /**
+   * Get the component identifier
+   *
+   * @return The component identifier
+   */
   std::string key() const override
   { return "statman"; }
 
-  void serialize(Writer& writer) const override {
-    writer.StartArray();
-    for(auto it = statman_.begin(); it != statman_.last_used(); ++it) {
-      auto& stat = *it;
-      writer.StartObject();
-
-      writer.Key("name");
-      writer.String(stat.name());
-
-      writer.Key("value");
-      std::string type = "";
-
-      switch(stat.type()) {
-        case Stat::UINT64:  writer.Uint64(stat.get_uint64());
-                            type = "UINT64";
-                            break;
-        case Stat::UINT32:  writer.Uint(stat.get_uint32());
-                            type = "UINT32";
-                            break;
-        case Stat::FLOAT:   writer.Double(stat.get_float());
-                            type = "FLOAT";
-                            break;
-      }
-
-      writer.Key("type");
-      writer.String(type);
-
-      writer.Key("index");
-      writer.Int(stat.index());
-
-      writer.EndObject();
-    }
-
-    writer.EndArray();
-  }
-
+  /**
+   * Serialize this component to the specified writer as JSON
+   *
+   * @param
+   * The writer to serialize the component to
+   */
+  void serialize(Writer& writer) const override;
 private:
   ::Statman& statman_;
+}; //< class Statman
 
-};
+/**--v----------- Implementation Details -----------v--**/
 
-} // < namespace dashboard
+inline void Statman::serialize(Writer& writer) const {
+  writer.StartArray();
+  for(auto it = statman_.begin(); it != statman_.last_used(); ++it) {
+    auto& stat = *it;
+    writer.StartObject();
 
-#endif
+    writer.Key("name");
+    writer.String(stat.name());
 
+    writer.Key("value");
+    std::string type = "";
 
+    switch(stat.type()) {
+      case Stat::UINT64:  writer.Uint64(stat.get_uint64());
+                          type = "UINT64";
+                          break;
+      case Stat::UINT32:  writer.Uint(stat.get_uint32());
+                          type = "UINT32";
+                          break;
+      case Stat::FLOAT:   writer.Double(stat.get_float());
+                          type = "FLOAT";
+                          break;
+    }
 
+    writer.Key("type");
+    writer.String(type);
+
+    writer.Key("index");
+    writer.Int(stat.index());
+
+    writer.EndObject();
+  }
+
+  writer.EndArray();
+}
+
+/**--^----------- Implementation Details -----------^--**/
+
+} //< namespace dashboard
+
+#endif //< DASHBOARD_COMPONENTS_STATMAN_HPP

@@ -19,64 +19,86 @@
 #ifndef DASHBOARD_COMPONENTS_STATUS_HPP
 #define DASHBOARD_COMPONENTS_STATUS_HPP
 
-#include "../component.hpp"
-
 #include <os>
 #include <rtc>
 
+#include "../component.hpp"
+
 namespace dashboard {
 
+/**
+ * This component provides information relating to the status of the
+ * VM's operating system such as the following:
+ * - Operating system's version number
+ * - Name of the virtual machine (service name)
+ * - Virtual machine uptime
+ * - CPU frequency
+ * - Virtual machine heap usage (memory)
+ * - Current date and time
+ */
 class Status : public Component {
-
 public:
-
+  /**
+   * Get the sole instance of this class
+   *
+   * @return The sole instance of this class
+   */
   static Status& instance() {
     static Status s;
     return s;
   }
 
+  /**
+   * Get the component identifier
+   *
+   * @return The component identifier
+   */
   std::string key() const override
   { return "status"; }
 
-  void serialize(Writer& writer) const override {
-    writer.StartObject();
-
-    writer.Key("version");
-    writer.String(OS::version());
-
-    writer.Key("service");
-    writer.String(Service::name());
-
-    writer.Key("uptime");
-    writer.Int64(OS::uptime());
-
-    writer.Key("heap_usage");
-    writer.Uint64(OS::heap_usage());
-
-    writer.Key("cpu_freq");
-    writer.Double(OS::cpu_freq().count());
-
-    writer.Key("current_time");
-    long hest = RTC::now();
-    struct tm* tt =
-      gmtime (&hest);
-    char datebuf[32];
-    strftime(datebuf, sizeof datebuf, "%FT%TZ", tt);
-    writer.String(datebuf);
-
-    writer.EndObject();
-  }
-
+  /**
+   * Serialize this component to the specified writer as JSON
+   *
+   * @param
+   * The writer to serialize the component to
+   */
+  void serialize(Writer& writer) const override;
 private:
+  Status() = default;
+}; //< class Status
 
-  Status() {};
+/**--v----------- Implementation Details -----------v--**/
 
-};
+inline void Status::serialize(Writer& writer) const {
+  writer.StartObject();
 
-} // < namespace dashboard
+  writer.Key("version");
+  writer.String(OS::version());
 
-#endif
+  writer.Key("service");
+  writer.String(Service::name());
 
+  writer.Key("uptime");
+  writer.Int64(OS::uptime());
 
+  writer.Key("heap_usage");
+  writer.Uint64(OS::heap_usage());
 
+  writer.Key("cpu_freq");
+  writer.Double(OS::cpu_freq().count());
 
+  writer.Key("current_time");
+  long hest = RTC::now();
+  struct tm* tt = gmtime (&hest);
+  char datebuf[32];
+  strftime(datebuf, sizeof datebuf, "%FT%TZ", tt);
+  writer.String(datebuf);
+
+  writer.EndObject();
+}
+
+/**--^----------- Implementation Details -----------^--**/
+
+} //< namespace dashboard
+
+#endif //< DASHBOARD_COMPONENTS_STATUS_HPP

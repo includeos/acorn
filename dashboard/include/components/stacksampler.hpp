@@ -19,24 +19,35 @@
 #ifndef DASHBOARD_COMPONENTS_STACKSAMPLER_HPP
 #define DASHBOARD_COMPONENTS_STACKSAMPLER_HPP
 
-#include "../component.hpp"
-
 #include <profile>
+
+#include "../component.hpp"
 
 namespace dashboard {
 
+/**
+ *
+ */
 class StackSampler : public Component {
-
 public:
 
+  /**
+   *
+   */
   static StackSampler& instance() {
     static StackSampler s;
     return s;
   }
 
+  /**
+   *
+   */
   std::string key() const override
   { return "stack_sampler"; }
 
+  /**
+   *
+   */
   void serialize(Writer& writer) const override {
 
     writer.StartObject();
@@ -81,25 +92,25 @@ public:
     writer.EndObject();
   }
 
+  /**
+   *
+   */
   void set_sample_size(int N)
   { sample_size_ = N; }
 
 private:
+  //------------------------------
+  // Class data members
+  int sample_size_;
+  //------------------------------
 
   StackSampler()
   : sample_size_{12}
   {
     ::StackSampler::begin();
   }
+}; //< class StackSampler
 
-  int sample_size_;
+} //< namespace dashboard
 
-};
-
-} // < namespace dashboard
-
-#endif
-
-
-
-
+#endif //< DASHBOARD_COMPONENTS_STACKSAMPLER_HPP

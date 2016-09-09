@@ -25,17 +25,28 @@
 
 namespace dashboard {
 
+/**
+ *
+ */
 class TCP : public Component {
-
 public:
 
+  /**
+   *
+   */
   TCP(net::TCP& tcp)
    : tcp_{tcp}
   {}
 
+  /**
+   *
+   */
   std::string key() const override
   { return "tcp"; }
 
+  /**
+   *
+   */
   void serialize(Writer& writer) const override {
     writer.StartObject();
 
@@ -69,6 +80,9 @@ public:
     writer.EndObject();
   }
 
+  /**
+   *
+   */
   static void serialize_connection(Writer& writer, const net::tcp::Connection& conn) {
     writer.StartObject();
 
@@ -90,6 +104,9 @@ public:
     writer.EndObject();
   }
 
+  /**
+   *
+   */
   static void serialize_listener(Writer& writer, const net::tcp::Listener& listener) {
     writer.StartObject();
 
@@ -108,14 +125,12 @@ public:
   }
 
 private:
+  //------------------------------
+  // Class data members
   net::TCP& tcp_;
+  //------------------------------
+}; //< class TCP
 
-};
+} //< namespace dashboard
 
-} // < namespace dashboard
-
-#endif
-
-
-
-
+#endif //< DASHBOARD_COMPONENTS_TCP_HPP

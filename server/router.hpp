@@ -411,24 +411,24 @@ namespace server {
   }
 
   inline Router& Router::add(const Router& router) {
-    auto& routes = router.route_table_;
-    route_table_.insert(routes.begin(), routes.end());
+    for (const auto& e : router.route_table_) {
+      auto it = route_table_.find(e.first);
+      if (it not_eq route_table_.end()) {
+        it->second.insert(it->second.cend(), e.second.cbegin(), e.second.cend());
+      }
+    }
     return *this;
   }
 
   inline std::string Router::to_string() const {
     std::ostringstream ss;
-
-    for(auto& method_routes : route_table_)
-    {
-      auto& method = method_routes.first;
-      auto& routes = method_routes.second;
-      for(auto& route : routes)
-      {
-        ss << method << "\t" << route.path << "\n";
+    for(const auto& method_routes : route_table_) {
+      auto method        = method_routes.first;
+      const auto& routes = method_routes.second;
+      for(const auto& route : routes) {
+        ss << method << '\t' << route.path << '\n';
       }
     }
-
     return ss.str();
   }
 
