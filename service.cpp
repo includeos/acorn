@@ -61,13 +61,12 @@ void Service::start(const std::string&) {
   logger_->flush();
   logger_->log("LUL\n");
 
-  OS::set_rsprint([] (const char* data, size_t len) {
-    OS::default_rsprint(data, len);
+  OS::add_stdout([] (const char* data, size_t len) {
     // append timestamp
     auto entry = timestamp() + std::string{data, len};
     logger_->log(entry);
   });
-
+  
   disk = fs::new_shared_memdisk();
 
   // mount the main partition in the Master Boot Record
@@ -77,7 +76,7 @@ void Service::start(const std::string&) {
 
       /** IP STACK SETUP **/
       // Bring up IPv4 stack on network interface 0
-      auto& stack = net::Inet4::ifconfig<0>(5.0,
+      auto& stack = net::Inet4::ifconfig(5.0,
       [](bool timeout) {
         printf("DHCP Resolution %s.\n", timeout?"failed":"succeeded");
       });
@@ -93,7 +92,7 @@ void Service::start(const std::string&) {
       /** BUCKET SETUP */
 
       // create squirrel bucket
-      squirrels = std::make_shared<SquirrelBucket>();
+      squirrels = std::make_shared<SquirrelBucket>(10);
       // set member name to be unique
       squirrels->add_index<std::string>("name",
       [](const Squirrel& s)->const auto&
@@ -125,6 +124,8 @@ void Service::start(const std::string&) {
       router.use("/api/squirrels", routes::Squirrels{squirrels});
       // setup User routes
       router.use("/api/users", routes::Users{users});
+      // setup Language routes
+      router.use("/api/languages", routes::Languages{});
 
 
       /** DASHBOARD SETUP **/
@@ -136,7 +137,7 @@ void Service::start(const std::string&) {
       // Construct component
       dashboard_->construct<dashboard::Statman>(Statman::get());
       dashboard_->construct<dashboard::TCP>(stack.tcp());
-      dashboard_->construct<dashboard::CPUsage>(IRQ_manager::get(), 0ms, 500ms);
+      dashboard_->construct<dashboard::CPUsage>(0ms, 500ms);
       dashboard_->construct<dashboard::Logger>(*logger_, static_cast<size_t>(50));
 
       // Add Dashboard routes to "/api/dashboard"
