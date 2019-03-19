@@ -1,3 +1,5 @@
+# WARNING: Deprecated. Repo moved to [demo-examples](https://github.com/includeos/demo-examples/tree/master/acorn)
+
 # acorn
 Acorn Web Server Appliance, built with [IncludeOS](https://github.com/hioa-cs/IncludeOS).
 
