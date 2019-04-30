@@ -18,7 +18,16 @@
 #!/bin/bash
 
 # Init all submodules
-git submodule update --init --recursive
+git submodule update --init 
+pushd lib/json
+git submodule update --init
+popd
+pushd lib/mana
+git submodule update --init
+pushd lib/http
+git submodule update --init
+popd
+popd
 
 # Specify the name of disk image for serving content
 FAT_DISK=memdisk.fat
